@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="overtime.example.repository.WorkPatternMapper">
+
+<!-- 勤務パターンマスター取得 -->
+<select id="findMany" resultType="WorkPatterns">
+	select
+		*
+	from
+		work_patterns
+</select>
+
+<!-- 勤務パターン1件取得 -->
+<select id="findOne" resultType="WorkPatterns">
+	select
+		*
+	from
+		work_patterns
+	where
+		id =#{id}
+</select>
+
+</mapper>

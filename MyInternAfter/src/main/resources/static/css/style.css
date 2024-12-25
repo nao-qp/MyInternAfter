@@ -1,0 +1,64 @@
+@charset "UTF-8";
+
+/** 幅調整 */
+.width-150 {
+	width:150px;
+}
+
+.width-400 {
+	width: 400px;
+}
+
+.width-180 {
+	width: 180px;
+}
+
+.width-150 {
+	width: 150px;
+}
+
+.width-120 {
+	width: 120px;
+}
+
+
+/** 高さ調整 */
+.height-165 {
+	height: 165px;
+}
+
+/** 申請書、報告書一覧表示文章表示調整 */
+.text-overflow {
+    white-space: nowrap; /* 折り返しを無効にして1行で表示 */
+    overflow: hidden;    /* はみ出た部分を非表示にする */
+    text-overflow: ellipsis; /* 省略記号「...」を表示する */
+    max-width: 300px;
+}
+
+
+/** 申請書レイアウト */
+.requestform-table {
+      width: 800px;
+     
+    }
+
+.requestform-header {
+	width:200px;
+	
+}
+
+/** 報告入力画面申請情報表示欄 */
+.request-data-display p {
+	margin-bottom: 5px;
+}
+
+
+
+/** 印刷調整 */
+@media print {
+    .navbar,
+    .footer {
+        display: none;
+    }
+
+}

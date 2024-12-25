@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/layout}">
+<head>
+<!-- JS読込 -->
+<script th:src="@{/js/list.js}" defer></script>
+</head>
+<body>
+<div layout:fragment="content">
+	<div class="text-center">
+		<h3>令和6年 12月 残業報告書</h3>
+	</div>
+	<div class="row d-flex justify-content-end">
+		<div class="width-120 d-flex align-items-center justify-content-end pe-0">
+			<p class="width-120 text-end align-center mb-0">提出：</p>
+		</div>
+		<div class="width-120 d-flex align-items-center justify-content-end pe-0 ps-0">
+			<p th:if="${submitted == 1}" th:text="提出済みです。" class="text-danger pe-0 mb-0"></p>
+		</div>
+		<div class="text-end width-150" th:if="${user.role == 1}">
+			<form method="post" th:action="@{/monthlyreport/submitdata}">
+				<input type="hidden" name="submitted" value="1">
+				<button type="submit" class="btn btn-primary">人事部へ提出</button>
+			</form>
+		</div>
+		<div class="text-end width-180">
+			<a th:href="@{/export/csv/all}" class="btn btn-primary">詳細一括CSV出力</a>
+		</div>
+	</div>
+	<div class="row mt-3">
+		<table class="table table-bordered border-seccondly table-striped">
+			<thead>
+				<tr>
+					<th scope="col" rowspan="3" class="w-50 text-center" style="vertical-align: middle;">氏名</th>
+					<th scope="col" colspan="9" class="w-50 py-0">累計残業時間</th>
+				</tr>
+				<tr>
+					<th rowspan="2" style="vertical-align: middle;">合計</th>
+					<th colspan="2" class="py-0">平日日中</th>
+					<th colspan="2" class="py-0">平日日中</th>
+					<th colspan="2" class="py-0">平日日中</th>
+					<th colspan="2" class="py-0">平日深夜・早朝</th>
+				</tr>
+				<tr>
+					<th class="py-0">〜60h</th>
+					<th class="py-0">60h〜</th>
+					<th class="py-0">〜60h</th>
+					<th class="py-0">60h〜</th>
+					<th class="py-0">〜60h</th>
+					<th class="py-0">60h〜</th>
+					<th class="py-0">〜60h</th>
+					<th class="py-0">60h〜</th>
+				</tr>
+			</thead>
+			<tbody>
+					<tr th:each="reportsSum : ${reportsSumList}">
+					<!-- プロトタイプでは個人ごと日付ごと詳細ページは実装しない -->
+<!--				<tr th:each="reportsSum : ${reportsSumList}"-->
+<!--						th:attr="data-href=@{/monthlyreport/detail/{id}(id=${reportsSum.usersId})}"-->
+<!--						style="cursor: pointer;">-->
+					<td th:text="${reportsSum.usersName}"></td>
+					<td class="text-end" th:text="${reportsSum.allSum}"></td>
+					<td class="text-end" th:text="${reportsSum.wdayDtUnder60}"></td>
+					<td class="text-end" th:text="${reportsSum.wdayDtOver60}"></td>
+					<td class="text-end" th:text="${reportsSum.wdayEmnUnder60}"></td>
+					<td class="text-end" th:text="${reportsSum.wdayEmnOver60}"></td>
+					<td class="text-end" th:text="${reportsSum.hdayDtUnder60}"></td>
+					<td class="text-end" th:text="${reportsSum.hdayDtOver60}"></td>
+					<td class="text-end" th:text="${reportsSum.hdayEmnUnder60}"></td>
+					<td class="text-end" th:text="${reportsSum.hdayEmnOver60}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="overtime.example.repository.RequestMapper">
+
+<!-- 社員//残業申請データ一覧取得 -->
+<select id="findMany" resultType="Requests">
+	select
+		requests.id
+		,requests.users_id
+		,requests.departments_id
+		,requests.work_patterns_id
+		,requests.request_date
+		,requests.overtime_date
+		,requests.start_time
+		,requests.end_time
+		,requests.rest_period
+		,requests.reason
+		,requests.approval_date
+		,requests.approval_users_id
+		,requests.is_checked
+		,requests.approval_status
+		,requests.create_date_time
+		,requests.update_date_time
+		,departments.name as departments_name
+		,users.name as users_name
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+	from
+		requests
+	left join
+		departments
+	on
+		requests.departments_id = departments.id
+	left join
+		users
+	on
+		requests.approval_users_id = users.id
+	left join
+		work_patterns
+	on
+		requests.work_patterns_id = work_patterns.id
+	where
+		requests.users_id = #{id}
+</select>
+
+<!-- 社員//残業申請データ1件取得 -->
+<select id="findOne" resultType="Requests">
+	select
+		requests.id
+		,requests.users_id
+		,requests.departments_id
+		,requests.work_patterns_id
+		,requests.request_date
+		,requests.overtime_date
+		,requests.start_time
+		,requests.end_time
+		,requests.rest_period
+		,requests.reason
+		,requests.approval_date
+		,requests.approval_users_id
+		,requests.is_checked
+		,requests.approval_status
+		,requests.create_date_time
+		,requests.update_date_time
+		,departments.name as departments_name
+		,users.name as users_name
+		,approval_users.name as approval_users_name
+		,work_patterns.name as work_patterns_name
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+	from
+		requests
+	left join
+		departments
+	on
+		requests.departments_id = departments.id
+	left join
+		users
+	on
+		requests.users_id = users.id
+	left join
+		users approval_users
+	on
+		requests.approval_users_id = approval_users.id
+	left join
+		work_patterns
+	on
+		requests.work_patterns_id = work_patterns.id
+	where
+		requests.id = #{id}
+</select>
+
+<!-- 社員//残業申請データ一1件作成 -->
+<!-- AUTO_INCREMENTで生成されたidをINSERT後にinsert対象データRequestsオブジェクトのidに設定する -->
+<insert id="insertOne" parameterType="Requests" useGeneratedKeys="true" keyProperty="id">
+	insert into requests (
+		users_id
+		,departments_id
+		,work_patterns_id
+		,request_date
+		,overtime_date
+		,start_time
+		,end_time
+		,rest_period
+		,reason
+		)
+		values (
+			#{usersId}
+			,#{departmentsId}
+			,#{workPatternsId}
+			,#{requestDate}
+			,#{overtimeDate}
+			,#{startTime}
+			,#{endTime}
+			,#{restPeriod}
+			,#{reason}
+		)
+</insert>
+
+<!-- 次長//残業申請確認データ一覧取得 -->
+<select id="findManyCheckData" resultType="Requests">
+	select
+		requests.id
+		,requests.users_id
+		,requests.departments_id
+		,requests.work_patterns_id
+		,requests.request_date
+		,requests.overtime_date
+		,requests.start_time
+		,requests.end_time
+		,requests.rest_period
+		,requests.reason
+		,requests.approval_date
+		,requests.approval_users_id
+		,requests.is_checked
+		,requests.approval_status
+		,requests.create_date_time
+		,requests.update_date_time
+		,users.name as users_name
+		,departments.name as departments_name
+		,approval_users.name as approval_users_name 
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+	from
+		requests
+	left join
+		users
+	on
+		requests.users_id = users.id
+	left join
+		departments
+	on
+		requests.departments_id = departments.id
+	left join
+		users approval_users
+	on
+		requests.approval_users_id = users.id
+	left join
+		work_patterns
+	on
+		requests.work_patterns_id = work_patterns.id
+</select>
+
+<!-- 次長//残業申請確認更新処理 -->
+<update id="updateOne">
+	update requests
+	set
+		is_checked = 1
+	where
+		id = #{id}
+</update>
+
+<!-- 課長//残業申請承認データ一覧取得（次長確認済みデータ） -->
+<!-- 確認済かつ決裁状態がnullのデータ -->
+<select id="findManyApproveData" resultType="Requests">
+	select
+		requests.id
+		,requests.users_id
+		,requests.departments_id
+		,requests.work_patterns_id
+		,requests.request_date
+		,requests.overtime_date
+		,requests.start_time
+		,requests.end_time
+		,requests.rest_period
+		,requests.reason
+		,requests.approval_date
+		,requests.approval_users_id
+		,requests.is_checked
+		,requests.approval_status
+		,requests.create_date_time
+		,requests.update_date_time
+		,users.name as users_name
+		,departments.name as departments_name
+		,approval_users.name as approval_users_name
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+	from
+		requests
+	left join
+		users
+	on
+		requests.users_id = users.id
+	left join
+		departments
+	on
+		requests.departments_id = departments.id
+	left join
+		users approval_users
+	on
+		requests.approval_users_id = users.id
+	left join
+		work_patterns
+	on
+		requests.work_patterns_id = work_patterns.id
+	where
+		requests.is_checked = 1	
+	and requests.approval_status is null
+</select>
+
+<!-- 課長//残業申請承認更新処理 -->
+<update id="updateOneApprove">
+	update requests
+	set
+		approval_status = '承認済'
+		,approval_date = curdate()
+		,approval_users_id = #{approvalUsersId}
+	where
+		id = #{id}
+</update>
+
+<!-- 課長//残業申請差し戻し更新処理 -->
+<!-- 差戻、未修正の状態に更新 -->
+<update id="updateOneReturn">
+	update requests
+	set
+		approval_status = '差戻'
+		,is_checked = 2
+	where
+		id = #{id}
+</update>
+
+<!-- 社員//申請書修正更新処理 -->
+<!-- 修正内容と、決裁状態(→null)、確認完了フラグ(→0)を更新 -->
+<update id="updateOneEdit">
+	update requests
+	set
+		work_patterns_id = #{workPatternsId}
+		,start_time = #{startTime}
+		,end_time = #{endTime}
+		,rest_period = #{restPeriod}
+		,reason = #{reason}
+		,approval_status = null
+		,is_checked = 0
+	where
+		id = #{id}
+</update>
+
+</mapper>
+
+
+

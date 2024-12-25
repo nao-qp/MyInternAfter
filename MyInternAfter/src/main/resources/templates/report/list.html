@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/layout}">
+<head>
+<!-- JS読込 -->
+<script th:src="@{/js/list.js}" defer></script>
+</head>
+<body>
+<div layout:fragment="content">
+	  <div class="text-center">
+		  <h3>残 業 報 告 一 覧</h3>
+	  </div>
+	  <div>
+		 <a class="btn btn-primary" th:text="新規作成" th:href="@{/report/new-add}"></a>
+	  </div>
+	  <!-- 報告一覧 -->
+	  <table class="table">
+	  <thead>
+	    <tr>
+		  <th scope="col">報告</th>
+	      <th scope="col" class="px-0">残業実施日</th>
+	      <th scope="col" class="px-0">実残業時間（開始）</th>
+	      <th scope="col" class="px-0">勤務時間</th>
+	      <th scope="col" class="px-0">実残業時間（終了）</th>
+	      <th scope="col" class="w-25">残業報告</th>
+	      <th scope="col" class="text-center px-0">次長確認</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	
+	    <!-- 行のリンク先を data-href 属性に設定 -->
+	    <!-- 報告データ一覧表示 -->
+	    <tr th:each="report : ${reportList}" 
+	        th:attr="data-href=@{/report/detail/{id}(id=${report.id})}"
+	        style="cursor: pointer;">
+	      <td>
+			<div th:if="${report.isChecked == 0}">
+		 		<a class="btn btn-primary" th:text="報告" th:href="@{/report/add/{id}(id=${report.id})}"></a>
+	  		</div>
+	  		<div th:if="${report.isChecked != 0}">
+				<p>報告済</p>
+			</div>
+		  </td>
+	      <th scope="row" class="px-0" th:text="${report.overtimeDate}"></th>
+	      <td class="px-0" th:text="${report.StartTime + ' 〜'}"></td>
+	      <td class="px-0 text-secondary" th:text="${report.workPatternsStartTime + '〜' + report.workPatternsEndTime}"></td>
+	      <td class="px-0" th:text="${'〜 ' +report.EndTime}"></td>
+	      <td class="text-overflow" th:text="${report.Reason}"></td>
+	      <td class="text-center">
+			  <div th:if="${report.isChecked == 1}">
+				  <p class="mb-0">確認済</p>
+			  </div>
+			  
+	      </td>
+	    </tr>
+	
+	  </tbody>
+	</table>
+</div>
+</body>
+</html>

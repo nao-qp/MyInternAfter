@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/layout}">
+<head>
+</head>
+<body>
+<div layout:fragment="content">
+	<div class="d-flex justify-content-center my-4">
+		<h3>残 業 申 請 書</h3>
+	</div>
+	<div class="d-flex justify-content-center">
+		<table class="table table-bordered requestform-table">
+			<tr>
+				<td class="requestform-header">部署名</td>
+				<td th:text="${report.departmentsName}"></td>
+			</tr>
+			<tr>
+				<td class="requestform-header">氏名</td>
+				<td th:text="${user.name}"></td>
+			</tr>
+			<tr>
+				<td class="requestform-header">勤務パターン</td>
+				<td th:text="${workPatternsDisplay}"></td>
+			</tr>
+			<tr>
+				<td class="requestform-header">残業予定時間</td>
+				<td>
+					<p class="mb-0" th:if="${beforeOvertimeDisplay != null}" th:text="${beforeOvertimeDisplay}"></p>
+					<p class="mb-0" th:if="${afterOvertimeDisplay != null}"  th:text="${afterOvertimeDisplay}"></p>
+				</td>
+			</tr>
+			<tr>
+				<td class="requestform-header height-165">残業理由</td>
+				<td th:utext="${requestReasonWithBr}"></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<p class="mb-0">上記の残業を命令します。</p>
+					<p class="text-end" th:text="${approvalDate}"></p>
+					
+					<div class="d-flex row">
+						<div class="col-auto width-400"></div>
+						<p class="col">承認者</p>
+						<div class="col d-flex justify-content-end">
+							<p class="text-end pe-5" th:text="${approvalUsersName}"></p>
+						</div>
+					</div>
+					
+				</td>
+			</tr>
+			<!-- 報告欄 -->
+			<tr>
+				<td class="requestform-header">実残業時間</td>
+				<td>
+					<p class="mb-0" th:if="${beforeOvertimeDisplayReport != null}" th:text="${beforeOvertimeDisplayReport}"></p>
+					<p class="mb-0" th:if="${afterOvertimeDisplayReport != null}" th:text="${afterOvertimeDisplayReport}"></p>
+				</td>
+			</tr>
+			<tr>
+				<td class="requestform-header">うち休憩時間</td>
+				<td th:text="${restPeriod}"></td>
+			</tr>
+			<tr>
+				<td class="requestform-header height-165">残業報告</td>
+				<td th:utext="${reportReasonWithBr}"></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<p class="mb-0">上記の残業を報告します。</p>
+					<p class="text-end" th:text="${reportDate}"></p>
+					
+					<div class="d-flex row">
+						<div class="col-auto width-400"></div>
+						<p class="col">申請者</p>
+						<div class="col d-flex justify-content-end">
+							<p class="text-end pe-5" th:text="${report.usersName}"></p>
+						</div>
+					</div>
+					
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	
+	
+	
+</div>
+</body>
+</html>

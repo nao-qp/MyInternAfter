@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/layout}">
+<head>
+</head>
+<body>
+<div layout:fragment="content">
+	<div class="text-center">
+		<h3>令和6年 12月 残業報告書</h3>
+	</div>
+	<div class="row">
+		<div class="text-end">
+			<a th:href="@{/export/csv/all}" class="btn btn-primary">詳細一括CSV出力</a>
+		</div>
+	</div>
+	<div class="row mt-3">
+		<table class="table table-bordered border-seccondly table-striped">
+			<thead>
+				<tr>
+					<th scope="col" rowspan="3" class="w-50 text-center" style="vertical-align: middle;">氏名</th>
+					<th scope="col" colspan="9" class="w-50 py-0">累計残業時間</th>
+				</tr>
+				<tr>
+					<th rowspan="2" style="vertical-align: middle;">合計</th>
+					<th colspan="2" class="py-0">平日日中</th>
+					<th colspan="2" class="py-0">平日日中</th>
+					<th colspan="2" class="py-0">平日日中</th>
+					<th colspan="2" class="py-0">平日深夜・早朝</th>
+				</tr>
+				<tr>
+					<th class="py-0">〜60h</th>
+					<th class="py-0">60h〜</th>
+					<th class="py-0">〜60h</th>
+					<th class="py-0">60h〜</th>
+					<th class="py-0">〜60h</th>
+					<th class="py-0">60h〜</th>
+					<th class="py-0">〜60h</th>
+					<th class="py-0">60h〜</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="reportsSum : ${reportsSumList}"
+						th:attr="data-href=@{/monthly/detail/{id}(id=${reportsSum.usersId})}"
+						style="cursor: pointer;">
+					<td th:text="${reportsSum.usersName}"></td>
+					<td class="text-end" th:text="${reportsSum.allSum}"></td>
+					<td class="text-end" th:text="${reportsSum.wdayDtUnder60}"></td>
+					<td class="text-end" th:text="${reportsSum.wdayDtOver60}"></td>
+					<td class="text-end" th:text="${reportsSum.wdayEmnUnder60}"></td>
+					<td class="text-end" th:text="${reportsSum.wdayEmnOver60}"></td>
+					<td class="text-end" th:text="${reportsSum.hdayDtUnder60}"></td>
+					<td class="text-end" th:text="${reportsSum.hdayDtOver60}"></td>
+					<td class="text-end" th:text="${reportsSum.hdayEmnUnder60}"></td>
+					<td class="text-end" th:text="${reportsSum.hdayEmnOver60}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</body>
+</html>

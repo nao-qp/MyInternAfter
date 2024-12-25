@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<nav layout:fragment="header"
+    class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">残業管理システム</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+        aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" th:if="${page != 'login'}">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            メニュー
+          </a>
+          <ul class="dropdown-menu">
+            <!-- 社員・次長メニュー -->
+            <li><a class="dropdown-item" th:href="@{/request/list?fromMenu=true}" th:if="${user.role == 0 || user.role == 1}">残業申請</a></li>
+            <li><a class="dropdown-item" th:href="@{/report/list}" th:if="${user.role == 0 || user.role == 1}">残業報告</a></li>
+            <!-- 次長メニュー -->
+            <li th:if="${user.role == 1}"><a class="dropdown-item" th:href="@{/check/request/list}">申請確認</a>
+            <li th:if="${user.role == 1}"><a class="dropdown-item" th:href="@{/check/report/list}">報告確認</a></li>
+            <!-- 課長メニュー -->
+            <li th:if="${user.role == 2}"><a class="dropdown-item" th:href="@{/approve/request/list}">申請承認</a></li>
+            <!-- 次長・課長・人事部メニュー -->
+            <li th:if="${user.role == 1 || user.role == 2 || user.role == 3}">
+				<a class="dropdown-item" th:href="@{/monthlyreport/list}">月次資料</a>
+			</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- 部署名 -->
+    <div>
+		<p class="mb-0" th:text="${page} == 'login' ? '' : ${user.departmentsName}"></p>
+	</div>
+	<!-- 社員名 -->
+	<div class="ps-2">
+		<p class="mb-0" th:text="${page} == 'login' ? '' : ${user.name}"></p>
+	</div>
+	<form th:if="${page} != 'login'" method="post" th:action="@{/logout}">
+        <button class="btn btn-secondary ms-3" type="submit">
+          ログアウト
+        </button>
+     </form>
+  </div>
+</nav>
+</body>
+</html>

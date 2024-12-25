@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="overtime.example.repository.MonthlySubmitDataMapper">
+
+
+<!-- 次長月次資料提出（1件データ作成） -->
+<insert id="insertOne">
+	insert into monthlysubmitdatas (
+		yearmonth
+		,submitted
+		)
+	values (
+		#{yearmonth}
+		,1
+	)
+</insert>
+
+<!-- 月次資料が提出済みかどうか（1件データ取得） -->
+<select id="findOne">
+	select
+		submitted
+	from
+		monthlysubmitdatas
+	where
+		yearmonth = #{yearmonth}
+	order by
+		id
+	limit 1;
+</select>
+
+</mapper>

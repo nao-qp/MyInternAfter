@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/layout}">
+<head>
+<!-- JS読込 -->
+<script th:src="@{/js/list.js}" defer></script>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="text-center">
+	  <h3>残 業 申 請 （ 確 認 ） 一 覧</h3>
+  </div>
+  <form method="post" th:action="@{/check/request/execute}">
+	<div class="text-end">
+	   <button type="submit" class="btn btn-primary">確認更新</button>
+	</div>
+  	<!-- 申請一覧 -->
+	<table class="table">
+	  <thead>
+	    <tr>
+	      <th scope="col" class="px-0">残業予定日</th>
+	      <th scope="col" class="width-150">申請者</th>
+	      <th scope="col" class="px-0">残業予定時間（開始）</th>
+	      <th scope="col" class="px-0">勤務時間</th>
+	      <th scope="col" class="px-0">残業予定時間（終了）</th>
+	      <th scope="col" class="w-25">残業理由</th>
+	      <th scope="col" class="text-center px-0">次長確認</th>
+	      <th scope="col" class="text-center px-0">課長承認</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	
+	    <!-- 行のリンク先を data-href 属性に設定 -->
+	    <tr th:each="request : ${requestList}" 
+	        th:attr="data-href=@{/request/detail/{id}(id=${request.id})}"
+	        style="cursor: pointer;">
+	      <th scope="row" class="px-0" th:text="${request.overtimeDate}"></th>
+	      <td th:text="${request.usersName}"></td>
+	      <td class="px-0" th:text="${request.startTime} + ' 〜'"></td>
+		  <td class="px-0 text-secondary" th:text="${request.workPatternsStartTime + '〜' + request.workPatternsEndTime}"></td>
+	      <td class="px-0" th:text="${'〜 ' + request.endTime}"></td>
+	      <td class="text-overflow" th:text="${request.reason}"></td>
+	      <!-- 確認欄はリンクなし -->
+	      <td class="d-flex justify-content-center" th:onclick="event.stopPropagation();">
+	          <!-- チェックボックスを表示 -->
+	          <!-- 未確認データ -->
+	          <div th:if="${request.isChecked == 0}">
+	          	<input type="checkbox" name="checkedRequests" th:value="${request.id}"/>
+	          </div>
+	          <!-- 差戻で未修正 -->
+	          <div th:if="${request.isChecked == 2}">
+	          	<p class="mb-0">-</p>
+	          </div>
+	          <div th:if="${request.isChecked == 1}">
+	          	<p class="mb-0">確認済</p>
+	          </div>
+		  </td>
+		  <td class="text-center" th:text="${request.approvalStatus}"></td>
+	    </tr>
+	
+	  </tbody>
+	</table>
+  </form>
+	
+</div>
+</body>
+</html>

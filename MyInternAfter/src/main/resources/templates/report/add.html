@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/layout}">
+<head>
+</head>
+<body>
+<div layout:fragment="content">
+	<div>
+		<h3>残業報告書</h3>
+	</div>
+	<!-- 申請情報 -->
+	<div class="mb-3 row">
+		<!-- 表示項目 -->
+		<div class="request-data-display mb-3 bg-body-tertiary">
+			<div class="py-2">
+				<h5>申請情報</h5>
+			</div>
+			<div class="row">
+				<p class="col-2">申請日</p>
+				<p class="col" th:text="${requestDate}"></p>
+			</div>
+			<div class="row">
+				<p class="col-2">部署名</p>
+				<p class="col" th:text="${report.departmentsName}"></p>
+			</div>
+			<div class="row">
+				<p class="col-2">氏名</p>
+				<p class="col" th:text="${user.name}"></p>
+			</div>
+			<div class="row">
+				<p class="col-2">勤務パターン</p>
+				<div class="col">
+					<p th:text="${report.workPatternsName} + '　' + ${report.workPatternsStartTime} + ' 〜 ' + ${report.workPatternsEndTime}"></p>
+	   			</div>
+			</div>
+			<div class="row">
+				<p class="col-2">残業予定時間</p>
+				<div class="col">
+					<p class="mb-0" th:if="${beforeOvertimeDisplay != null}" th:text="${beforeOvertimeDisplay}"></p>
+					<p class="mb-0" th:if="${afterOvertimeDisplay != null}"  th:text="${afterOvertimeDisplay}"></p>
+				</div>
+			</div>
+			<div class="row">
+				<p class="col-2">規定休憩時間</p>
+				<p class="col" th:text="${report.requestsRestPeriod}"></p>
+			</div>
+		    <div class="row">
+				<p class="col-2">残業理由</p>
+				<p class="col" th:utext="${requestReasonWithBr}"></p>
+			</div>
+		    <div class="row">
+				<p class="col-2">承認</p>
+				<p class="col-2" th:text="${report.approvalDate}"></p>
+				<p class="col" th:text="${report.approvalUsersName}"></p>
+			</div>
+	  	</div>
+		
+
+		<!-- 残業報告入力 -->
+		<form method="post" th:action="@{/report/add/{id}(id=${report.id})}" th:object="${reportForm}">
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label mb-2">報告日</label>
+				<div class="col-sm-10 d-flex align-items-center">
+				  <p class="mb-1" th:text="${report.reportDate}"></p>
+			    </div>
+			    
+			    <label for="workPatternsId" class="col-sm-2 col-form-label mb-2">勤務パターン</label>
+			    <!-- 更新時に使用 -->
+			    <input type="hidden" th:field="*{workPatternsId}" > 
+			    <input type="hidden" th:field="*{workPatternsStartTime}" >
+			    <input type="hidden" th:field="*{workPatternsEndTime}" >
+
+			    <div class="col-sm-2 d-flex align-items-center">
+			    	<p class="mb-1" th:text="${report.workPatternsName + '　' + report.workPatternsStartTime + ' 〜 ' + report.workPatternsEndTime}"></p>
+			    </div>
+			    <!-- 非表示項目 formにセット -->
+	       		<input type="hidden" th:field="*{workPatternsStartTime}" id="workPatternsStartTime" />
+	       		<input type="hidden" th:field="*{workPatternsEndTime}" id="workPatternsEndTime" />
+	       		
+	       		<!-- カラム位置調整 -->
+	       		<div class="col-sm-7"></div>
+			    
+				<label class="col-sm-2 col-form-label mb-2">残業実施日</label>
+				<div class="col-sm-10 d-flex align-items-center">
+				  <!-- 残業申請時に設定した残業実施日を設定 -->
+				  <p class="mb-1" th:text="${report.overtimeDate}"></p>
+				  <input type="hidden" th:field="*{overtimeDate}">
+			    </div>
+				
+				<label for="staticEmail" class="col-sm-2 col-form-label mb-2">実残業時間</label>
+				<label for="startTime" class="col-auto col-form-label">前残業開始時間：</label>
+			    	<input type="time" class="col-sm-2 mb-2" th:field="*{startTime}">
+			    	<p id="startTimeDisplay" class="col-sm-1 mb-0 pb-1 d-flex align-items-center justify-content-center"
+			    			th:text="${'〜' + report.workPatternsStartTime}"></p>
+			    <!-- バリデーション 開始時間＜勤務パターンの開始時間になっているか -->
+			    <div class="error col-sm-5 d-flex align-items-center text-danger">
+					<span th:if="${startTimeErrors != null}" th:each="err : ${startTimeErrors}" th:text="${err.defaultMessage}"></span>
+				</div>
+			    <!-- カラム位置調整 -->
+	       		<div class="col-sm-12"></div>
+	       		<div class="col-sm-2"></div>
+	       		
+			     <label for="endTime" class="col-auto col-form-label mb-2">後残業終了時間：</label>
+			     	<p id="endTimeDisplay" class="col-sm-1 mb-0 pb-1 d-flex align-items-center justify-content-center"
+			     			th:text="${report.workPatternsEndTime} + '〜'"></p>
+			    	<input type="time" class="col-sm-2 mb-2" th:field="*{endTime}">
+			    <!-- バリデーション 勤務パターン終了時間＜終了時間になっているか-->
+			    <div class="error col-sm-5 d-flex align-items-center text-danger">
+					<span th:if="${endTimeErrors != null}" th:each="err : ${endTimeErrors}" th:text="${err.defaultMessage}"></span>
+				</div>
+				
+			 	<!-- カラム位置調整 -->
+	       		<div class="col-sm-2" th:if="${startEndisNullErrors != null}"></div>
+	       		<!-- バリデーション 開始時間、終了時間どちらか入力されているか -->
+				<div class="error col-sm-10 d-flex align-items-center text-danger" th:if="${startEndisNullErrors != null}">
+					<span th:each="err : ${startEndisNullErrors}" th:text="${err.defaultMessage}"></span>
+				</div>
+
+			    <label for="restPeriod" class="col-sm-2 col-form-label mb-2">うち休憩時間</label>
+			    <label for="restStartTime" class="col-auto col-form-label">開始時間：</label>
+			    	<input type="time" class="col-sm-2 mb-2" th:field="*{restStartTime}">
+			    <!-- カラム位置調整 -->
+	       		<div class="col-sm-12"></div>
+	       		<div class="col-sm-2"></div>
+	       		
+			     <label for="restEndTime" class="col-auto col-form-label mb-2">終了時間：</label>
+			    	<input type="time" class="col-sm-2 mb-2" th:field="*{restEndTime}">
+			    <!-- カラム位置調整 -->
+	       		<div class="col-sm-7"></div>
+	       		<div class="col-sm-2"></div>
+
+   				<!-- バリデーション 休憩開始時間＜休憩終了時間になっているか -->
+			    <div class="error col-sm-5 d-flex align-items-center text-danger">
+					<span th:if="${restTimeStartEndErrors != null}" th:each="err : ${restTimeStartEndErrors}" 
+						th:text="${err.defaultMessage}"></span>
+				</div>
+				<!-- カラム位置調整 -->
+				<div class="col-sm-5"></div>
+
+			    <label for="reason" class="col-sm-2 col-form-label">残業報告</label>
+			    <div class="col-sm-10 my-3">
+			      <textarea class="form-control" th:field="*{reason}" rows="5"></textarea>
+			    </div>
+
+		    </div>
+		    <!-- 更新ボタン -->
+			<div class="row d-flex justify-content-center mb-3">
+				<button type="submit" class="btn btn-primary col-sm-3">報告</button>
+			</div>
+	    </form>
+	</div>
+	
+</div>
+</body>
+</html>

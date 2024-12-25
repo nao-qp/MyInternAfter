@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="overtime.example.repository.ReportMapper">
+
+<!-- 報告データ一1件作成 -->
+<!-- 申請データ作成時に空のデータを作成 -->
+<insert id="insertOne">
+	insert into reports (
+		users_id
+		,work_patterns_id
+		,report_date
+		,requests_id
+		,overtime_date
+		,start_time
+		,end_time
+		,reason
+		)
+		values (
+			#{usersId}
+			,#{workPatternsId}
+			,#{requestDate}
+			,#{requestsId}
+			,#{overtimeDate}
+			,#{startTime}
+			,#{endTime}
+			,#{reason}
+		)
+</insert>
+
+<!-- 報告データ一1件修正更新 -->
+<!-- 申請書差戻編集時の変更内容をreportデータに反映 -->
+<update id="updateEditOne">
+	update
+		reports
+	set
+		work_patterns_id = #{workPatternsId}
+		,start_time = #{startTime}
+		,end_time = #{endTime}
+	where
+		requests_id	= #{requestsId}
+</update>
+
+
+<!-- 社員//報告データ一一覧取得 -->
+<!-- 申請データ承認済　または　報告データ事後報告　を取得 -->
+<select id="findMany" resultType="Reports">
+	select
+		reports.id
+		,reports.users_id
+		,reports.requests_id
+		,reports.report_date
+		,reports.overtime_date
+		,reports.start_time
+		,reports.end_time
+		,reports.rest_start_time
+		,reports.rest_end_time
+		,reports.reason
+		,reports.is_checked
+		,requests.request_date
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+	from
+		reports
+	left join
+		requests
+	on
+		reports.requests_id = requests.id
+	left join
+		work_patterns
+	on
+		reports.work_patterns_id = work_patterns.id
+	where
+		reports.users_id = #{id}
+	and (requests.approval_status = '承認済'
+		or reports.requests_id = 0)
+</select>
+
+<!-- 社員/報告データ1件取得 -->
+<select id="findOne" resultType="Reports">
+	select
+		reports.id
+		,reports.users_id
+		,reports.requests_id
+		,reports.work_patterns_id
+		,reports.report_date
+		,reports.overtime_date
+		,reports.start_time
+		,reports.end_time
+		,reports.rest_start_time
+		,reports.rest_end_time
+		,reports.rest_period
+		,reports.reason
+		,reports.is_checked
+		,reports.update_date_time
+		,users.departments_id
+<!--		,requests.work_patterns_id-->
+		,requests.request_date
+		,requests.start_time as requests_start_time
+		,requests.end_time as requests_end_time
+		,requests.rest_period as requests_rest_period
+		,requests.reason as requests_reason
+		,requests.approval_date
+		,users.name as users_name
+		,approval_users.name as approval_users_name
+		,departments.name as departments_name
+		,work_patterns.name as work_patterns_name
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+	from
+		reports
+	left join
+		requests
+	on
+		reports.requests_id = requests.id
+	left join
+		users
+	on
+		reports.users_id = users.id
+	left join
+		departments
+	on
+		users.departments_id = departments.id
+	left join
+		users approval_users
+	on
+		requests.approval_users_id = approval_users.id
+	left join
+		work_patterns
+	on
+		reports.work_patterns_id = work_patterns.id
+	where
+		reports.id = #{id}
+</select>
+
+<!-- 社員/報告データ更新 -->
+<update id="updateOne">
+	update
+		reports
+	set
+		report_date = #{reportDate}
+		,start_time = #{startTime}
+		,end_time = #{endTime}
+		,rest_start_time = #{restStartTime}
+		,rest_end_time = #{restEndTime}
+		,rest_period = #{restPeriod}
+		,reason = #{reason}
+		,is_checked = 2
+		,wday_dt_under60 = #{wdayDtUnder60}
+		,wday_dt_over60 = #{wdayDtOver60}
+		,wday_emn_under60 = #{wdayEmnUnder60}
+		,wday_emn_over60 = #{wdayEmnOver60}
+		,hday_dt_under60 = #{hdayDtUnder60}
+		,hday_dt_over60 = #{hdayDtOver60}
+		,hday_emn_under60 = #{hdayEmnUnder60}
+		,hday_emn_over60 = #{hdayEmnOver60}
+	where
+		id = #{id}
+</update>
+
+<!-- 社員/報告データ新規1件作成（事後報告） -->
+<!-- 申請書無しなのでrequests_id=0,is_checked=2とする-->
+<insert id="insertNewOne">
+	insert into reports (
+		users_id
+		,work_patterns_id
+		,report_date
+		,overtime_date
+		,requests_id
+		,start_time
+		,end_time
+		,rest_start_time
+		,rest_end_time
+		,rest_period
+		,actual_overtime
+		,reason
+		,is_checked
+		,wday_dt_under60
+		,wday_dt_over60
+		,wday_emn_under60
+		,wday_emn_over60
+		,hday_dt_under60
+		,hday_dt_over60
+		,hday_emn_under60
+		,hday_emn_over60
+		)
+		values (
+			#{usersId}
+			,#{workPatternsId}
+			,#{reportDate}
+			,#{overtimeDate}
+			,0
+			,#{startTime}
+			,#{endTime}
+			,#{restStartTime}
+			,#{restEndTime}
+			,#{restPeriod}
+			,#{actualOvertime}
+			,#{reason}
+			,2
+			,#{wdayDtUnder60}
+			,#{wdayDtOver60}
+			,#{wdayEmnUnder60}
+			,#{wdayEmnOver60}
+			,#{hdayDtUnder60}
+			,#{hdayDtOver60}
+			,#{hdayEmnUnder60}
+			,#{hdayEmnOver60}
+		)
+</insert>
+
+<!-- 次長/報告データ一一覧取得 -->
+<!-- is_checked!=0報告済み、報告確認済みデータを取得 -->
+<select id="findManyCheckData" resultType="Reports">
+	select
+		reports.id
+		,reports.users_id
+		,reports.requests_id
+		,reports.overtime_date
+		,reports.report_date
+		,reports.start_time
+		,reports.end_time
+		,reports.rest_start_time
+		,reports.rest_end_time
+		,reports.reason
+		,reports.is_checked
+		,users.name as users_name
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+	from
+		reports
+	left join
+		users
+	on
+		reports.users_id = users.id
+	left join
+		work_patterns
+	on
+		reports.work_patterns_id = work_patterns.id
+	where
+		reports.is_checked != 0
+</select>
+
+<!-- 次長//残業報告確認更新処理 -->
+<update id="updateOneChecked">
+	update reports
+	set
+		is_checked = 1
+	where
+		id = #{id}
+</update>
+
+
+<!-- 月次資料集計（人ごと）（確認済みデータ） -->
+<!-- 月次資料出力画面表示用 -->
+<select id="findManySum">
+	select
+		reports.users_id
+		,sum(reports.wday_dt_under60)
+			+ sum(reports.wday_dt_over60)
+			+ sum(reports.wday_emn_under60)
+			+ sum(reports.wday_emn_over60)
+			+ sum(reports.hday_dt_under60)
+			+ sum(reports.hday_dt_over60)
+			+ sum(reports.hday_emn_under60)
+			+ sum(reports.hday_emn_over60) as all_sum
+		,sum(reports.wday_dt_under60) as wday_dt_under60
+		,sum(reports.wday_dt_over60) as wday_dt_over60
+		,sum(reports.wday_emn_under60) as wday_emn_under60
+		,sum(reports.wday_emn_over60) as wday_emn_over60
+		,sum(reports.hday_dt_under60) as hday_dt_under60
+		,sum(reports.hday_dt_over60) as hday_dt_over60
+		,sum(reports.hday_emn_under60) as hday_emn_under60
+		,sum(reports.hday_emn_over60) as hday_emn_over60
+		,users.name as users_name
+	from
+		reports
+	left join
+		users
+	on
+		reports.users_id = users.id
+	where
+		reports.is_checked = 1
+	group by
+		reports.users_id
+		,users.name
+</select>
+
+
+<!-- 月次資料CSV出力データ一覧取得（全件） -->
+<!-- 人事部/次長/課長//月次資料全件CSV出力用 -->
+<!-- departments情報はusersを元に取得。（事後報告対応。reportsにdepartments_idを持たせていなかったため。） -->
+<select id="findManyMonthlyAll">
+	select
+		reports.users_id
+		,departments.name as departments_name
+		,users.account
+		,users.name
+		,reports.overtime_date
+		,reports.start_time
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+		,reports.end_time
+		,reports.rest_start_time
+		,reports.rest_end_time
+		,reports.rest_period
+		,reports.actual_overtime
+		,reports.reason
+		,reports.wday_dt_under60
+		,reports.wday_dt_over60
+		,reports.wday_emn_under60
+		,reports.wday_emn_over60
+		,reports.hday_dt_under60
+		,reports.hday_dt_over60
+		,reports.hday_emn_under60
+		,reports.hday_emn_over60
+	from
+		reports
+	
+	left join
+		users
+	on
+		reports.users_id = users.id
+	
+	left join
+		work_patterns
+	on
+		reports.work_patterns_id = work_patterns.id
+	
+	left join
+		departments
+	on
+		users.departments_id = departments.id
+		
+	where
+		reports.is_checked = 1
+	order by
+		users.account
+		,reports.overtime_date
+</select>
+
+<!-- 月次資料集計（人ごと日付ごと）（確認済みデータ） -->
+<!-- 作成中！！！！！！ -->
+<select id="findManyMonthlyUser">
+	select
+		reports.users_id
+		,sum(reports.wday_dt_under60) as wday_dt_under60
+		,sum(reports.wday_dt_over60) as wday_dt_over60
+		,sum(reports.wday_emn_under60) as wday_emn_under60
+		,sum(reports.wday_emn_over60) as wday_emn_over60
+		,sum(reports.hday_dt_under60) as hday_dt_under60
+		,sum(reports.hday_dt_over60) as hday_dt_over60
+		,sum(reports.hday_emn_under60) as hday_emn_under60
+		,sum(reports.hday_emn_over60) as hday_emn_over60
+		,users.name as users_name
+	from
+		reports
+	left join
+		users
+	on
+		reports.users_id = users.id
+	where
+		reports.is_checked = 1
+	group by
+		reports.users_id
+		,users.name
+</select>
+
+<!-- 個人ごとの最新データから累計残業時間を取得する。 -->
+<select id="findOneGetTotalOvertime">
+	select 
+		reports.wday_dt_under60
+		,reports.wday_dt_over60
+		,reports.wday_emn_under60
+		,reports.wday_emn_over60
+		,reports.hday_dt_under60
+		,reports.hday_dt_over60
+		,reports.hday_emn_under60
+		,reports.hday_emn_over60
+	from
+		(
+		select
+			users_id
+			,max(id) as max_id
+		from
+			reports
+		where
+			users_id = #{id}
+		group by
+			users_id
+		) reports_max_id
+	left join
+		reports
+	on
+		reports_max_id.max_id = reports.id
+
+</select>
+
+</mapper>
