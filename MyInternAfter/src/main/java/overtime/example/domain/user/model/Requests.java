@@ -16,7 +16,7 @@ public class Requests {
 	private LocalDate overtimeDate;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	private LocalTime restPeriod;
+	private Integer restPeriod;
 	private String reason;
 	private LocalDate approvalDate;
 	private Integer approvalUsersId;

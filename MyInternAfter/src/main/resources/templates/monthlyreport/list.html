@@ -54,11 +54,9 @@
 				</tr>
 			</thead>
 			<tbody>
-					<tr th:each="reportsSum : ${reportsSumList}">
-					<!-- プロトタイプでは個人ごと日付ごと詳細ページは実装しない -->
-<!--				<tr th:each="reportsSum : ${reportsSumList}"-->
-<!--						th:attr="data-href=@{/monthlyreport/detail/{id}(id=${reportsSum.usersId})}"-->
-<!--						style="cursor: pointer;">-->
+				<tr th:each="reportsSum : ${reportsSumList}"
+						th:attr="data-href=@{/monthlyreport/detail/{id}(id=${reportsSum.usersId})}"
+						style="cursor: pointer;">
 					<td th:text="${reportsSum.usersName}"></td>
 					<td class="text-end" th:text="${reportsSum.allSum}"></td>
 					<td class="text-end" th:text="${reportsSum.wdayDtUnder60}"></td>

@@ -38,7 +38,7 @@ public class Reports {
 	private LocalDateTime requestDate;
 	private LocalTime requestsStartTime;
 	private LocalTime requestsEndTime;
-	private LocalTime requestsRestPeriod;
+	private Integer requestsRestPeriod;
 	private String requestsReason;
 	private LocalDate approvalDate;
 	private Integer approvalUsersId;

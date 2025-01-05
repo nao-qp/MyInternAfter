@@ -3,6 +3,7 @@
  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
  layout:decorate="~{layout/layout}">
 <head>
+	<script th:src="@{/js/set-restperiod.js}" defer></script>
 </head>
 <body>
 <div layout:fragment="content">
@@ -118,8 +119,16 @@
 				</div>
 
 			    <label for="restPeriod" class="col-sm-2 col-form-label mb-2">うち休憩時間</label>
+<!--			    	 規定休憩時間比較用にコントローラーへ送る -->
+<!--			    	<input type="time" th:field="*{restPeriod}" style="display:none;">-->
 			    <label for="restStartTime" class="col-auto col-form-label">開始時間：</label>
 			    	<input type="time" class="col-sm-2 mb-2" th:field="*{restStartTime}">
+			     <!-- 規定休憩時間表示 -->	
+				<div class="col-sm-4 d-flex align-items-center">
+					<span>規定休憩時間：</span>
+					<span id="displayRestPeriod"></span>
+					<input type="text" th:field="*{restPeriod}" style="display:none;">
+				</div>
 			    <!-- カラム位置調整 -->
 	       		<div class="col-sm-12"></div>
 	       		<div class="col-sm-2"></div>
@@ -136,7 +145,23 @@
 						th:text="${err.defaultMessage}"></span>
 				</div>
 				<!-- カラム位置調整 -->
-				<div class="col-sm-5"></div>
+   				<div class="col-sm-4"></div>
+   				<div class="col-sm-2"></div>
+				<!-- バリデーション 休憩開始時間 >= 規定休憩時間になっているか -->
+				<div class="error col-sm-5 d-flex align-items-center text-danger">
+					<span id="moreThanRestPeriodErrorsMessage" th:if="${moreThanRestPeriodErrors != null}" th:each="err : ${moreThanRestPeriodErrors}" 
+						th:text="${err.defaultMessage}"></span>
+				</div>
+				<!-- カラム位置調整 -->
+   				<div class="col-sm-4"></div>
+				<div class="col-sm-2"></div>
+				<!-- バリデーション 入力した休憩時間が残業時間内にあるか -->
+				<div class="error col-sm-5 d-flex align-items-center text-danger">
+					<span id="restTimeInOverTimeErrorsMessage" th:if="${restTimeInOverTimeErrors != null}" th:each="err : ${restTimeInOverTimeErrors}" 
+						th:text="${err.defaultMessage}"></span>
+				</div>
+				<!-- カラム位置調整 -->
+   				<div class="col-sm-4"></div>
 
 			    <label for="reason" class="col-sm-2 col-form-label">残業報告</label>
 			    <div class="col-sm-10 my-3">

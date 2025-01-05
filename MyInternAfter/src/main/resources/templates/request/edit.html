@@ -9,6 +9,7 @@
 	 const initialDisplayWorkPatternsId = /*[[${initialDisplayWorkPatternsId}]]*/ '1';
      const workPatterns = /*[[${workPatternList}]]*/ [];  // 勤務パターンをJavaScriptに渡す
 </script>
+<script th:src="@{/js/set-restperiod.js}" defer></script>
 </head>
 <body>
 <div layout:fragment="content">
@@ -84,8 +85,9 @@
 	       		<div class="col-sm-2"></div>
 			    <!-- 表示項目 -->
 			    <label for="restPeriod" class="col-sm-2 col-form-label mb-2">規定休憩時間</label>
-				<div class="col-sm-8">
-			      <input type="time" readonly class="col-sm-3 form-control-plaintext" th:field="*{restPeriod}">
+			    <div class="col-sm-8">
+				  <span id="displayRestPeriod" class="col-sm-3 form-control-plaintext"></span>
+				  <input type="text" th:field="*{restPeriod}" style="display:none;">
 			    </div>
 			    
 				<!-- 入力項目 -->

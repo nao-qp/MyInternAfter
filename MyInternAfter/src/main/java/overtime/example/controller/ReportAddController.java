@@ -151,12 +151,20 @@ public class ReportAddController {
 		    List<ObjectError> restTimeStartEndErrors = bindingResult.getGlobalErrors().stream()
 		    		.filter(error -> error.getCode().contains("RestStartBeforeRestEnd"))  
 		            .collect(Collectors.toList());
+		    List<ObjectError> moreThanRestPeriodErrors = bindingResult.getGlobalErrors().stream()
+		    		.filter(error -> error.getCode().contains("MoreThanRestPeriod"))  
+		            .collect(Collectors.toList());
+		    List<ObjectError> restTimeInOverTimeErrors = bindingResult.getGlobalErrors().stream()
+		    		.filter(error -> error.getCode().contains("RestTimeInOverTime"))  
+		            .collect(Collectors.toList());
 		    
 	        // モデルにエラーメッセージを追加
 	    	model.addAttribute("startEndisNullErrors", startEndisNullErrors);
 	        model.addAttribute("startTimeErrors", startTimeErrors);
 	        model.addAttribute("endTimeErrors", endTimeErrors);
 	        model.addAttribute("restTimeStartEndErrors", restTimeStartEndErrors);
+	        model.addAttribute("moreThanRestPeriodErrors", moreThanRestPeriodErrors);
+	        model.addAttribute("restTimeInOverTimeErrors", restTimeInOverTimeErrors);
 		          
 	        return getReportAdd(model, locale, form, id);
 		}
@@ -312,13 +320,21 @@ public class ReportAddController {
 		    List<ObjectError> restTimeStartEndErrors = bindingResult.getGlobalErrors().stream()
 		    		.filter(error -> error.getCode().contains("RestStartBeforeRestEnd"))  
 		            .collect(Collectors.toList());
+		    List<ObjectError> moreThanRestPeriodErrors = bindingResult.getGlobalErrors().stream()
+		    		.filter(error -> error.getCode().contains("MoreThanRestPeriod"))  
+		            .collect(Collectors.toList());
+		    List<ObjectError> restTimeInOverTimeErrors = bindingResult.getGlobalErrors().stream()
+		    		.filter(error -> error.getCode().contains("RestTimeInOverTime"))  
+		            .collect(Collectors.toList());
 		    
 	        // モデルにエラーメッセージを追加
 	    	model.addAttribute("startEndisNullErrors", startEndisNullErrors);
 	        model.addAttribute("startTimeErrors", startTimeErrors);
 	        model.addAttribute("endTimeErrors", endTimeErrors);
 	        model.addAttribute("restTimeStartEndErrors", restTimeStartEndErrors);
-		          
+	        model.addAttribute("moreThanRestPeriodErrors", moreThanRestPeriodErrors);
+	        model.addAttribute("restTimeInOverTimeErrors", restTimeInOverTimeErrors);
+	        
 	        return getNewReportAdd(model, locale, form);
 		}
 				

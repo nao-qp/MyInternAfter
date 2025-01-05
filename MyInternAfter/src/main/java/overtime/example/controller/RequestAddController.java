@@ -2,7 +2,6 @@ package overtime.example.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -93,9 +92,6 @@ public class RequestAddController {
         //残業実施日の初期値を設定
         form.setOvertimeDate(LocalDate.now());
 
-        //休憩時間の初期値を00:00に設定
-        form.setRestPeriod(LocalTime.of(0, 0));
-
         form.setWorkPatternsStartTime(null);
         
 		return "request/add";
@@ -157,7 +153,6 @@ public class RequestAddController {
         	request.setEndTime(workPattern.getEndTime());
         }
 
-        request.setRestPeriod(LocalTime.of(0, 0));	//TODO:規定休憩時間を設定する
         requestService.addRequest(request);
 
         //申請データに紐づく報告データを作成更新

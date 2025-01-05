@@ -28,7 +28,6 @@ public class RequestForm {
 	private LocalTime startTime;
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime endTime;
-	@DateTimeFormat(pattern = "HH:mm")
-	private LocalTime restPeriod;
+	private Integer restPeriod;
 	private String reason;
 }
