@@ -132,37 +132,38 @@
 			    <!-- カラム位置調整 -->
 	       		<div class="col-sm-12"></div>
 	       		<div class="col-sm-2"></div>
-	       		
 			     <label for="restEndTime" class="col-auto col-form-label mb-2">終了時間：</label>
 			    	<input type="time" class="col-sm-2 mb-2" th:field="*{restEndTime}">
-			    <!-- カラム位置調整 -->
-	       		<div class="col-sm-7"></div>
+			    	
+			   	<!-- カラム位置調整 -->
+   				<div class="col-12"></div>
 	       		<div class="col-sm-2"></div>
-
    				<!-- バリデーション 休憩開始時間＜休憩終了時間になっているか -->
-			    <div class="error col-sm-5 d-flex align-items-center text-danger">
+			    <div class="error col-sm-6 d-flex align-items-center text-danger">
 					<span th:if="${restTimeStartEndErrors != null}" th:each="err : ${restTimeStartEndErrors}" 
 						th:text="${err.defaultMessage}"></span>
 				</div>
+
 				<!-- カラム位置調整 -->
-   				<div class="col-sm-4"></div>
+   				<div class="col-12"></div>
+   				<!-- カラム位置調整 -->
    				<div class="col-sm-2"></div>
 				<!-- バリデーション 休憩開始時間 >= 規定休憩時間になっているか -->
-				<div class="error col-sm-5 d-flex align-items-center text-danger">
+				<div class="error col-sm-6 d-flex align-items-center text-danger">
 					<span id="moreThanRestPeriodErrorsMessage" th:if="${moreThanRestPeriodErrors != null}" th:each="err : ${moreThanRestPeriodErrors}" 
 						th:text="${err.defaultMessage}"></span>
 				</div>
-				<!-- カラム位置調整 -->
-   				<div class="col-sm-4"></div>
+   				<!-- カラム位置調整 -->
+   				<div class="col-12"></div>
 				<div class="col-sm-2"></div>
 				<!-- バリデーション 入力した休憩時間が残業時間内にあるか -->
 				<div class="error col-sm-5 d-flex align-items-center text-danger">
 					<span id="restTimeInOverTimeErrorsMessage" th:if="${restTimeInOverTimeErrors != null}" th:each="err : ${restTimeInOverTimeErrors}" 
 						th:text="${err.defaultMessage}"></span>
 				</div>
-				<!-- カラム位置調整 -->
-   				<div class="col-sm-4"></div>
 
+				<!-- カラム位置調整 -->
+   				<div class="col-12"></div>
 			    <label for="reason" class="col-sm-2 col-form-label">残業報告</label>
 			    <div class="col-sm-10 my-3">
 			      <textarea class="form-control" th:field="*{reason}" rows="5"></textarea>
