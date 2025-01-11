@@ -58,15 +58,15 @@ public class MonthlyreportListController {
         //残業時間データ取得
         List<ReportsSum> reportsSumList = reportService.getMonthlySum();
         for (ReportsSum reportsSum: reportsSumList) {
-        	timeConverterService.toHoursFromMinutes(reportsSum.getAllSum());
-        	timeConverterService.toHoursFromMinutes(reportsSum.getWdayDtUnder60());
-        	timeConverterService.toHoursFromMinutes(reportsSum.getWdayDtOver60());
-        	timeConverterService.toHoursFromMinutes(reportsSum.getWdayEmnUnder60());
-        	timeConverterService.toHoursFromMinutes(reportsSum.getWdayEmnOver60());
-        	timeConverterService.toHoursFromMinutes(reportsSum.getHdayDtUnder60());
-        	timeConverterService.toHoursFromMinutes(reportsSum.getHdayDtOver60());
-        	timeConverterService.toHoursFromMinutes(reportsSum.getHdayEmnUnder60());
-        	timeConverterService.toHoursFromMinutes(reportsSum.getHdayEmnOver60());
+        	reportsSum.setAllSum(timeConverterService.toHoursFromMinutes(reportsSum.getAllSum()));
+        	reportsSum.setWdayDtUnder60(timeConverterService.toHoursFromMinutes(reportsSum.getWdayDtUnder60()));
+        	reportsSum.setWdayDtOver60(timeConverterService.toHoursFromMinutes(reportsSum.getWdayDtOver60()));
+        	reportsSum.setWdayEmnUnder60(timeConverterService.toHoursFromMinutes(reportsSum.getWdayEmnUnder60()));
+        	reportsSum.setWdayEmnOver60(timeConverterService.toHoursFromMinutes(reportsSum.getWdayEmnOver60()));
+        	reportsSum.setHdayDtUnder60(timeConverterService.toHoursFromMinutes(reportsSum.getHdayDtUnder60()));
+        	reportsSum.setHdayDtOver60(timeConverterService.toHoursFromMinutes(reportsSum.getHdayDtOver60()));
+        	reportsSum.setHdayEmnUnder60(timeConverterService.toHoursFromMinutes(reportsSum.getHdayEmnUnder60()));
+        	reportsSum.setHdayEmnOver60(timeConverterService.toHoursFromMinutes(reportsSum.getHdayEmnOver60()));
         }
 
         model.addAttribute("reportsSumList", reportsSumList);

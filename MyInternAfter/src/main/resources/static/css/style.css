@@ -1,31 +1,36 @@
 @charset "UTF-8";
 
 /** 幅調整 */
-.width-150 {
-	width:150px;
+.width-80 {
+	width: 80px;
 }
 
-.width-400 {
-	width: 400px;
-}
-
-.width-180 {
-	width: 180px;
-}
-
-.width-150 {
-	width: 150px;
+.width-100 {
+	width: 100px;
 }
 
 .width-120 {
 	width: 120px;
 }
 
+.width-150 {
+	width:150px;
+}
+
+
+.width-180 {
+	width: 180px;
+}
 
 /** 高さ調整 */
 .height-165 {
 	height: 165px;
 }
+
+.width-400 {
+	width: 400px;
+}
+
 
 /** 申請書、報告書一覧表示文章表示調整 */
 .text-overflow {

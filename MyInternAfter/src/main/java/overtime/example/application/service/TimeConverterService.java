@@ -13,7 +13,10 @@ public class TimeConverterService {
 	 * @param Minutes
 	 * @return 分を時間変換し、四捨五入して小数点以下2位にした数値。
 	 */
-	public double toHoursFromMinutes(int minutes) {
+	public Double toHoursFromMinutes(Double minutes) {
+		if (minutes == null) {
+			return null;
+		}
 		double hours = minutes / 60.0;
 		//四捨五入して小数点以下2在表示にする。
 		return Math.round(hours * 100.0) / 100.0;

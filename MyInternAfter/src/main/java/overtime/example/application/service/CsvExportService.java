@@ -65,18 +65,19 @@ public class CsvExportService {
                 		String.valueOf(report.getWorkPatternsStartTime()),
                 		String.valueOf(report.getWorkPatternsEndTime()),
                 		String.valueOf(report.getEndTime()),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getActualOvertime())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getRestPeriod())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getActualOvertime() + report.getRestPeriod())),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getActualOvertime()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getRestPeriod()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(
+                				Double.valueOf(report.getActualOvertime() + report.getRestPeriod()))),
                 		report.getReason(),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getWdayDtUnder60())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getWdayDtOver60())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getWdayEmnUnder60())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getWdayEmnOver60())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getHdayDtUnder60())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getHdayDtOver60())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getHdayEmnUnder60())),
-                		String.valueOf(timeConverterService.toHoursFromMinutes(report.getHdayEmnOver60()))
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getWdayDtUnder60()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getWdayDtOver60()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getWdayEmnUnder60()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getWdayEmnOver60()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getHdayDtUnder60()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getHdayDtOver60()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getHdayEmnUnder60()))),
+                		String.valueOf(timeConverterService.toHoursFromMinutes(Double.valueOf(report.getHdayEmnOver60())))
                 });
             }
         }

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import overtime.example.domain.user.model.Overtime;
 import overtime.example.domain.user.model.Reports;
 import overtime.example.domain.user.model.ReportsSum;
+import overtime.example.domain.user.model.ReportsSumDedail;
 
 @Mapper
 public interface ReportMapper {
@@ -42,7 +43,11 @@ public interface ReportMapper {
 	/** 月次資料CSV出力データ一覧取得（全件） */
 	public List<Reports> findManyMonthlyAll();
 	
+	/** 月次資料人ごと詳細データ取得 */
+	public List<ReportsSumDedail> findManyMonthlyUser(Integer id);
+	
 	/** 個人の最新の累計残業時間1件取得 */
 	public Overtime findOneGetTotalOvertime(Integer id);
+
 	
 }

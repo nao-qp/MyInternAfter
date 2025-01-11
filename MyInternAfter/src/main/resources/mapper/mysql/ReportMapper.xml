@@ -297,7 +297,7 @@
 		reports.users_id
 		,departments.name as departments_name
 		,users.account
-		,users.name
+		,users.name as users_name
 		,reports.overtime_date
 		,reports.start_time
 		,work_patterns.start_time as work_patterns_start_time
@@ -341,34 +341,71 @@
 		,reports.overtime_date
 </select>
 
-<!-- 月次資料集計（人ごと日付ごと）（確認済みデータ） -->
-<!-- 作成中！！！！！！ -->
+<!-- 月次資料人ごと詳細（人ごと日付ごと）（確認済みデータ） -->
+<!-- 人ごとの詳細画面一覧 -->
+<!-- TODO:現時点(2025/01/09)で1日に数件の残業報告を作成できてしまうが、同日の残業報告が存在することは考慮しない -->
 <select id="findManyMonthlyUser">
 	select
-		reports.users_id
-		,sum(reports.wday_dt_under60) as wday_dt_under60
-		,sum(reports.wday_dt_over60) as wday_dt_over60
-		,sum(reports.wday_emn_under60) as wday_emn_under60
-		,sum(reports.wday_emn_over60) as wday_emn_over60
-		,sum(reports.hday_dt_under60) as hday_dt_under60
-		,sum(reports.hday_dt_over60) as hday_dt_over60
-		,sum(reports.hday_emn_under60) as hday_emn_under60
-		,sum(reports.hday_emn_over60) as hday_emn_over60
+		reports.id as reportsId
+		,reports.users_id
+		,departments.name as departments_name
+		,users.account
 		,users.name as users_name
+		,reports.overtime_date
+		,reports.start_time
+		,work_patterns.start_time as work_patterns_start_time
+		,work_patterns.end_time as work_patterns_end_time
+		,reports.end_time
+		,reports.rest_start_time
+		,reports.rest_end_time
+		,reports.rest_period
+		,reports.actual_overtime
+		,reports.reason
+		,reports.wday_dt_under60
+			+ reports.wday_dt_over60
+			+ reports.wday_emn_under60
+			+ reports.wday_emn_over60
+			+ reports.hday_dt_under60
+			+ reports.hday_dt_over60
+			+ reports.hday_emn_under60
+			+ reports.hday_emn_over60 as all_sum
+		,reports.wday_dt_under60
+		,reports.wday_dt_over60
+		,reports.wday_emn_under60
+		,reports.wday_emn_over60
+		,reports.hday_dt_under60
+		,reports.hday_dt_over60
+		,reports.hday_emn_under60
+		,reports.hday_emn_over60
 	from
 		reports
+	
 	left join
 		users
 	on
 		reports.users_id = users.id
+	
+	left join
+		work_patterns
+	on
+		reports.work_patterns_id = work_patterns.id
+	
+	left join
+		departments
+	on
+		users.departments_id = departments.id
+		
 	where
 		reports.is_checked = 1
-	group by
-		reports.users_id
-		,users.name
+	and reports.users_id = #{id}
+	order by
+		users.account
+		,reports.overtime_date
+		,reports.start_time
 </select>
 
 <!-- 個人ごとの最新データから累計残業時間を取得する。 -->
+<!-- 残業報告作成時に1件前の累計残業時間を取得して追加データの累計残業時間データを算出する処理に使用 -->
 <select id="findOneGetTotalOvertime">
 	select 
 		reports.wday_dt_under60

@@ -7,7 +7,7 @@
 <body>
 <div layout:fragment="content">
 	<div class="text-center">
-		<h3>令和6年 12月 残業報告書</h3>
+		<h3 th:text="'令和6年 12月 残業報告書　' + ${userName}"></h3>
 	</div>
 	<div class="row">
 		<div class="text-end">
@@ -18,15 +18,19 @@
 		<table class="table table-bordered border-seccondly table-striped">
 			<thead>
 				<tr>
-					<th scope="col" rowspan="3" class="w-50 text-center" style="vertical-align: middle;">氏名</th>
+					<th scope="col" rowspan="3" class="width-100 text-center" style="vertical-align: middle;">日付</th>
+					<th scope="col" rowspan="3" class="width-80 text-center" style="vertical-align: middle;">前残業</th>
+					<th scope="col" rowspan="3" class="width-120 text-center" style="vertical-align: middle;">通常勤務</th>
+					<th scope="col" rowspan="3" class="width-80 text-center" style="vertical-align: middle;">後残業</th>
+					<th scope="col" rowspan="3" class="text-center" style="vertical-align: middle;">残業内容</th>
 					<th scope="col" colspan="9" class="w-50 py-0">累計残業時間</th>
 				</tr>
 				<tr>
 					<th rowspan="2" style="vertical-align: middle;">合計</th>
 					<th colspan="2" class="py-0">平日日中</th>
-					<th colspan="2" class="py-0">平日日中</th>
-					<th colspan="2" class="py-0">平日日中</th>
 					<th colspan="2" class="py-0">平日深夜・早朝</th>
+					<th colspan="2" class="py-0">休日日中</th>
+					<th colspan="2" class="py-0">休日深夜・早朝</th>
 				</tr>
 				<tr>
 					<th class="py-0">〜60h</th>
@@ -40,20 +44,27 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="reportsSum : ${reportsSumList}"
-						th:attr="data-href=@{/monthly/detail/{id}(id=${reportsSum.usersId})}"
+					<tr th:each="reportsSumDedail : ${reportsSumDedailList}"
+						th:attr="data-href=@{/report/detail/{id}(id=${reportsSumDedail.reportsId})}"
+						onclick="window.location.href=this.getAttribute('data-href');" 
 						style="cursor: pointer;">
-					<td th:text="${reportsSum.usersName}"></td>
-					<td class="text-end" th:text="${reportsSum.allSum}"></td>
-					<td class="text-end" th:text="${reportsSum.wdayDtUnder60}"></td>
-					<td class="text-end" th:text="${reportsSum.wdayDtOver60}"></td>
-					<td class="text-end" th:text="${reportsSum.wdayEmnUnder60}"></td>
-					<td class="text-end" th:text="${reportsSum.wdayEmnOver60}"></td>
-					<td class="text-end" th:text="${reportsSum.hdayDtUnder60}"></td>
-					<td class="text-end" th:text="${reportsSum.hdayDtOver60}"></td>
-					<td class="text-end" th:text="${reportsSum.hdayEmnUnder60}"></td>
-					<td class="text-end" th:text="${reportsSum.hdayEmnOver60}"></td>
+					<td th:text="${reportsSumDedail.formatOvertimeDate}"></td>
+					<td th:text="${reportsSumDedail.startTime}"></td>
+					<td th:text="${reportsSumDedail.workPatternsStartTime + '〜' + reportsSumDedail.workPatternsEndTime}"></td>
+					<td th:text="${reportsSumDedail.endTime}"></td>
+					<td th:text="${reportsSumDedail.reason}"></td>
+					 <!-- 累計残業時間 -->
+					<td class="text-end" th:text="${reportsSumDedail.allSum}"></td>
+					<td class="text-end" th:text="${reportsSumDedail.wdayDtUnder60}"></td>
+					<td class="text-end" th:text="${reportsSumDedail.wdayDtOver60}"></td>
+					<td class="text-end" th:text="${reportsSumDedail.wdayEmnUnder60}"></td>
+					<td class="text-end" th:text="${reportsSumDedail.wdayEmnOver60}"></td>
+					<td class="text-end" th:text="${reportsSumDedail.hdayDtUnder60}"></td>
+					<td class="text-end" th:text="${reportsSumDedail.hdayDtOver60}"></td>
+					<td class="text-end" th:text="${reportsSumDedail.hdayEmnUnder60}"></td>
+					<td class="text-end" th:text="${reportsSumDedail.hdayEmnOver60}"></td>
 				</tr>
+
 			</tbody>
 		</table>
 	</div>

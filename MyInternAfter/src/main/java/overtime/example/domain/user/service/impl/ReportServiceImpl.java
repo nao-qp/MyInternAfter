@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import overtime.example.domain.user.model.Overtime;
 import overtime.example.domain.user.model.Reports;
 import overtime.example.domain.user.model.ReportsSum;
+import overtime.example.domain.user.model.ReportsSumDedail;
 import overtime.example.domain.user.service.ReportService;
 import overtime.example.repository.ReportMapper;
 
@@ -77,6 +78,12 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<Reports> getMonthlyListAll() {
 		return mapper.findManyMonthlyAll();
+	}
+	
+	/** 月次資料人ごと詳細データ取得 */
+	@Override
+	public List<ReportsSumDedail> getMonthlyUser(Integer id) {
+		return mapper.findManyMonthlyUser(id);
 	}
 	
 	/** 個人の最新の累計残業時間1件取得 */

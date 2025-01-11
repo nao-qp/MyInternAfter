@@ -5,6 +5,7 @@ import java.util.List;
 import overtime.example.domain.user.model.Overtime;
 import overtime.example.domain.user.model.Reports;
 import overtime.example.domain.user.model.ReportsSum;
+import overtime.example.domain.user.model.ReportsSumDedail;
 
 public interface ReportService {
 
@@ -39,6 +40,10 @@ public interface ReportService {
 	/** 月次資料CSV出力データ一覧取得（全件） */
 	public List<Reports> getMonthlyListAll();
 	
+	/** 月次資料人ごと詳細データ取得 */
+	public List<ReportsSumDedail> getMonthlyUser(Integer id);
+	
 	/** 個人の最新の累計残業時間1件取得 */
 	public Overtime GetTotalOvertime(Integer id);
+
 }
