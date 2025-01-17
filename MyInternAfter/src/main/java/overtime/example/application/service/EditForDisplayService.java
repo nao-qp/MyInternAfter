@@ -1,5 +1,6 @@
 package overtime.example.application.service;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -126,5 +127,20 @@ public class EditForDisplayService {
 	        return "";
 	    }
 	    return input.replace("\n", "<br>");
+	}
+	
+	public String getWorkPatternsDisplay(LocalDate overtimeDate, 
+			String workPatternsName, LocalTime workPatternsStartTime, LocalTime workPatternsEndTime) {
+		//勤務パターン欄編集
+	    String workPatternsDisplay = "";
+	    //休日（「休日」を表示）
+	    if (calcOvertimeService.isWeekend(overtimeDate)) {
+	    	workPatternsDisplay = "休日";
+	    } else {
+	    //平日（勤務パターンを表示）
+	    	workPatternsDisplay = workPatternsName + "　" 
+	    						+ workPatternsStartTime + " 〜 " + workPatternsEndTime;
+	    }
+	    return workPatternsDisplay;
 	}
 }

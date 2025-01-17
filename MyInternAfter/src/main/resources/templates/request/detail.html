@@ -6,6 +6,11 @@
 </head>
 <body>
 <div layout:fragment="content">
+	<!-- Excel出力ボタン -->
+	<div class="excel-btn text-end width-180">
+		<a th:href="@{/excel/download}" class="btn btn-primary">Excel出力</a>
+	</div>
+	<!--/* レイアウト */-->
   	<div id="pdf-content">
 	<div class="d-flex justify-content-center mt-4">
 		<h3>残 業 申 請 書</h3>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
 import overtime.example.application.service.EditForDisplayService;
 import overtime.example.domain.user.model.Requests;
 import overtime.example.domain.user.model.Users;
@@ -79,9 +80,10 @@ public class RequestController {
 
 	//残業申請詳細画面表示
 	@GetMapping("request/detail/{id}")
-	public String getRequestDetail(Model model, Locale locale, @PathVariable("id") Integer id) {
+	public String getRequestDetail(Model model, Locale locale, @PathVariable("id") Integer id,
+			HttpSession session) {
+			// Excel出力用にsessionを用意
 
-	      
 		// 現在のユーザーの認証情報を取得
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -113,57 +115,9 @@ public class RequestController {
         //残業理由の改行を表示する
         String reasonWithBr = editForDisplayService.convertNewlinesToBr(request.getReason());
         model.addAttribute("reasonWithBr", reasonWithBr);
-
         
-//        //勤務パターン欄編集
-//        String workPatternsDisplay = "";
-//        //休日（「休日」を表示）
-//        if (calcOvertimeService.isWeekend(request.getOvertimeDate())) {
-//        	workPatternsDisplay = "休日";
-//        } else {
-//        //平日（勤務パターンを表示）
-//        	workPatternsDisplay = request.getWorkPatternsName() + "　" 
-//        						+ request.getWorkPatternsStartTime() + " 〜 " + request.getWorkPatternsEndTime();
-//        }
-//        model.addAttribute("workPatternsDisplay", workPatternsDisplay);
-//        
-//        //残業予定時間欄編集
-//        //前残業、後残業表示データ作成
-//        Map<String, String> overtimeBefAftDisplayMap = editForDisplayService.getOvertimeBefAftDisplay(
-//        								request.getStartTime(), request.getEndTime(),
-//        								request.getWorkPatternsStartTime(), request.getWorkPatternsEndTime());
-//        String beforeOvertimeDisplay = null;
-//        String afterOvertimeDisplay = null;
-//        if (overtimeBefAftDisplayMap.get("before") != null) {
-//        	beforeOvertimeDisplay = overtimeBefAftDisplayMap.get("before");
-//        }
-//        if (overtimeBefAftDisplayMap.get("after") != null) {
-//        	afterOvertimeDisplay = overtimeBefAftDisplayMap.get("after");
-//        }
-//        model.addAttribute("beforeOvertimeDisplay", beforeOvertimeDisplay);
-//        model.addAttribute("afterOvertimeDisplay", afterOvertimeDisplay);
-//        
-//        //承認日、承認者編集
-//        String approvalDate = "";
-//        String approvalUsersName = "";
-//        //承認済の場合、承認日、承認者を表示
-//        //念の為nullチェックをして設定
-//        if (request.getApprovalStatus().equals("承認済")) {
-//        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年 M月 d日");
-//        	approvalDate = (request.getApprovalDate() != null)
-//        					? request.getApprovalDate().format(formatter)
-//        					: "　　年　　月　　日";
-//        	approvalUsersName = (request.getApprovalUsersName() != null)
-//        							? request.getApprovalUsersName()
-//        							: "";
-//        }
-//        model.addAttribute("approvalDate", approvalDate);
-//        model.addAttribute("approvalUsersName", approvalUsersName);
-// 
-//        //報告欄フォーマット
-//        String reportDate = "　　年　　月　　日";
-//        model.addAttribute("reportDate", reportDate);
-        
+        // Excel出力用にsessionに保存
+        session.setAttribute("model", model);
         
 		return "request/detail";
 	}

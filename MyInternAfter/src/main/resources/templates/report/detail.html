@@ -6,6 +6,10 @@
 </head>
 <body>
 <div layout:fragment="content">
+	<!-- Excel出力ボタン -->
+	<div class="excel-btn text-end width-180">
+		<a th:href="@{/excel/download}" class="btn btn-primary">Excel出力</a>
+	</div>
 	<div class="d-flex justify-content-center my-4">
 		<h3>残 業 申 請 書</h3>
 	</div>
@@ -17,7 +21,7 @@
 			</tr>
 			<tr>
 				<td class="requestform-header">氏名</td>
-				<td th:text="${user.name}"></td>
+				<td th:text="${report.usersName}"></td>
 			</tr>
 			<tr>
 				<td class="requestform-header">勤務パターン</td>
@@ -32,7 +36,7 @@
 			</tr>
 			<tr>
 				<td class="requestform-header height-165">残業理由</td>
-				<td th:utext="${requestReasonWithBr}"></td>
+				<td th:utext="${reasonWithBr}"></td>
 			</tr>
 			<tr>
 				<td colspan="2">

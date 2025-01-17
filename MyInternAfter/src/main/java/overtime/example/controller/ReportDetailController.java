@@ -1,5 +1,7 @@
 package overtime.example.controller;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Map;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import jakarta.servlet.http.HttpSession;
 import overtime.example.application.service.EditForDisplayService;
 import overtime.example.domain.user.model.Reports;
 import overtime.example.domain.user.model.Requests;
@@ -38,7 +41,8 @@ public class ReportDetailController {
 
 	//残業報告詳細画面表示
 	@GetMapping("report/detail/{id}")
-	public String getReportDetail(Model model, Locale locale, @PathVariable("id") Integer id) {
+	public String getReportDetail(Model model, Locale locale, @PathVariable("id") Integer id,
+			HttpSession session) {
 
 		// 現在のユーザーの認証情報を取得
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -64,16 +68,36 @@ public class ReportDetailController {
         Requests request = requestService.getRequest(report.getRequestsId());
         if (request != null) {
         	//申請欄を設定
-            editForDisplayService.editRequestForm(model, request);
+        	editForDisplayService.editRequestForm(model, request);
+        	// Excel出力で使用するためmodelに追加
+            model.addAttribute("request", request);
         } else {
-        	//申請なしの場合、承認日の枠だけ表示
+        	//申請なしの場合
+        	// 申請なしの場合でも部署名、氏名、勤務パターンは表示する
+        	request = new Requests();
+        	request.setUsersName(report.getUsersName());
+        	request.setDepartmentsName(report.getDepartmentsName());
+        	// Excel出力で使用するためmodelに追加
+            model.addAttribute("request", request);
+        	//勤務パターン名を編集
+        	LocalDate overtimeDate = report.getOvertimeDate();
+        	String workPatternsName = report.getWorkPatternsName();
+        	LocalTime workPatternsStartTime = report.getWorkPatternsStartTime();
+        	LocalTime workPatternsEndTime = report.getWorkPatternsEndTime();
+        	String workPatternsDisplay = editForDisplayService.getWorkPatternsDisplay(
+        			overtimeDate, workPatternsName, workPatternsStartTime, workPatternsEndTime);
+        	model.addAttribute("workPatternsDisplay", workPatternsDisplay);
+        	// 承認日の枠だけ表示
         	String approvalDate = "　　年　　月　　日";
         	model.addAttribute("approvalDate", approvalDate);
+        	String approvalUsersName = "";
+        	model.addAttribute("approvalUsersName", approvalUsersName);
         }
+   
         
         //残業理由の改行を表示する
-        String requestReasonWithBr = editForDisplayService.convertNewlinesToBr(report.getRequestsReason());
-        model.addAttribute("requestReasonWithBr", requestReasonWithBr);
+        String reasonWithBr = editForDisplayService.convertNewlinesToBr(report.getRequestsReason());
+        model.addAttribute("reasonWithBr", reasonWithBr);
         
 
         //報告日を編集
@@ -108,6 +132,9 @@ public class ReportDetailController {
         String reportReasonWithBr = editForDisplayService.convertNewlinesToBr(report.getReason());
         model.addAttribute("reportReasonWithBr", reportReasonWithBr);
    
+        // Excel出力用にsessionに保存
+        session.setAttribute("model", model);
+        
 		return "report/detail";
 	}
 

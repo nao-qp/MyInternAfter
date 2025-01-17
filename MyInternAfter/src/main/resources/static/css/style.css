@@ -62,8 +62,8 @@
 /** 印刷調整 */
 @media print {
     .navbar,
-    .footer {
+    .footer,
+    .excel-btn {
         display: none;
     }
-
 }
