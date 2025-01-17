@@ -34,10 +34,9 @@ public class ExcelExportController {
         FileInputStream fis = new FileInputStream(new File("src/main/resources/excel/template.xlsx"));
         
         // 既存のテンプレートExcelファイルを読み込む
-        XSSFWorkbook workbook = new XSSFWorkbook(fis);
-        
-        // シートを取得
-        XSSFSheet sheet = workbook.getSheetAt(0);  // 1番目のシートを取得（シート番号は0から始まる）
+        try (XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+	        // シートを取得
+	        XSSFSheet sheet = workbook.getSheetAt(0);  // 1番目のシートを取得（シート番号は0から始まる）
         
         // 表示データを取得
         Model model = (Model)session.getAttribute("model");
@@ -264,11 +263,10 @@ public class ExcelExportController {
         }
 
         // Excelをバイト配列として書き出し
-        FileOutputStream fos = new FileOutputStream("output.xlsx");
-        workbook.write(fos);
-        fos.close();
-        workbook.close();
-
+        try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
+        	 workbook.write(fos);
+        }
+        }
         // Excelをバイト配列として取得
         byte[] excelBytes;
         try (FileInputStream outputFis = new FileInputStream("output.xlsx")) {
