@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
+import overtime.example.aop.annotation.Authenticated;
+import overtime.example.aop.model.AuthenticationInfo;
 import overtime.example.application.service.EditForDisplayService;
 import overtime.example.domain.user.model.Requests;
 import overtime.example.domain.user.model.Users;
@@ -33,25 +35,35 @@ public class RequestController {
 	@Autowired
 	private EditForDisplayService editForDisplayService;
 
+	@Autowired
+	private AuthenticationInfo authenticationInfo;
 
+
+	
+	
 	//残業申請一覧画面表示
+	
 	@GetMapping("request/list")
+	@Authenticated
 	public String getRequestList(Model model, Locale locale,
-			@RequestParam(value = "fromMenu", required = false) String fromMenu ) {
-	      
-		// 現在のユーザーの認証情報を取得
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			@RequestParam(value = "fromMenu", required = false) String fromMenu
+			) {
+//	      
+//		// 現在のユーザーの認証情報を取得
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        //認証情報がない場合は、ログインページにリダイレクトする
+//        if (authentication == null) {
+//        	 return "redirect:/user/login";
+//        }
+//
+//        // 認証されたユーザーのIDを取得
+//        Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
 
-        //認証情報がない場合は、ログインページにリダイレクトする
-        if (authentication == null) {
-        	 return "redirect:/user/login";
-        }
-
-        // 認証されたユーザーのIDを取得
-        Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-
+		System.out.println("テスト2");
         // ユーザー情報を取得
-        Users user = userService.getUser(currentUserId);
+//        Users user = userService.getUser(currentUserId);
+        Users user = userService.getUser(authenticationInfo.getUserId());
         model.addAttribute("user", user);
 
         //権限によって初期ページにリダイレクトする
@@ -72,7 +84,8 @@ public class RequestController {
         }
 
         // 残業申請データ一覧を取得
-        List<Requests> requestList = requestService.getRequestList(currentUserId);
+//        List<Requests> requestList = requestService.getRequestList(currentUserId);
+        List<Requests> requestList = requestService.getRequestList(user.getId());
         model.addAttribute("requestList", requestList);
 
         return "request/list";
