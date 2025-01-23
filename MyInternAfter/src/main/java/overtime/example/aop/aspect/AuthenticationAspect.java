@@ -3,15 +3,19 @@ package overtime.example.aop.aspect;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import overtime.example.aop.model.AuthenticationInfo;
+import overtime.example.domain.user.service.impl.CustomUserDetails;
+
 @Aspect
 @Component
 public class AuthenticationAspect {
-//	@Autowired
-//	private AuthenticationInfo authenticationInfo;
+	@Autowired
+	private AuthenticationInfo authenticationInfo;
 
 	
 	// @Pointcutを使って、@Authenticatedアノテーションがついたメソッドをターゲットにします
@@ -19,13 +23,9 @@ public class AuthenticationAspect {
 //    public void authenticatedMethods() {}
 
     // @Aroundアノテーションで、実行前に認証処理を挿入
-    @Around("@annotation(Authenticated)") // 上記のPointcutを適用
+    @Around("@annotation(overtime.example.aop.annotation.Authenticated)") // 上記のPointcutを適用
     public Object checkAuthentication(ProceedingJoinPoint joinPoint) throws Throwable {
-    	
-    	System.out.println("テスト");
 
-		 
-		
         // 認証チェックを行う
         boolean isAuthenticated = checkUserAuthentication(); // 認証状態を確認するロジックを呼び出し
         
@@ -41,9 +41,11 @@ public class AuthenticationAspect {
     private boolean checkUserAuthentication() {    	
     	// 現在のユーザーの認証情報を取得
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        
         // 取得した認証情報をセッションに設定
         if (authentication != null) {
-//        	authenticationInfo.setUserId(((CustomUserDetails) authentication.getPrincipal()).getId());
+        	authenticationInfo.setUserId(((CustomUserDetails) authentication.getPrincipal()).getId());
         	return true;
         } else {
         	// 認証情報なし

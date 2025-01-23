@@ -12,5 +12,5 @@ public interface UserMapper {
 	public LoginUsers findLoginUser(String account);
 
 	/** ユーザー情報取得 */
-	public Users findUser(Integer id);
+	public Users findUser(String account);
 }

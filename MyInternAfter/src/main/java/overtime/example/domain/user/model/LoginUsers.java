@@ -7,5 +7,5 @@ public class LoginUsers {
 	private Integer id;
 	private String account;
 	private String pass;
-	private String role;
+	private Integer role;
 }

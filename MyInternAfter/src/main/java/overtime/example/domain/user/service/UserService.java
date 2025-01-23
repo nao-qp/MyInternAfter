@@ -9,5 +9,5 @@ public interface UserService {
 	public LoginUsers getLoginUser(String account);
 
 	/** ユーザー情報取得 */
-	public Users getUser(Integer id);
+	public Users getUser(String account);
 }

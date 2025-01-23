@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import overtime.example.domain.user.model.LoginUsers;
+import overtime.example.domain.user.model.Users;
 import overtime.example.domain.user.service.UserService;
 
 @Service
@@ -24,15 +24,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throws UsernameNotFoundException {
 
 		//ユーザー情報取得
-		LoginUsers loginUser = service.getLoginUser(username);
-
+		// getLoginUserからgetUserへ変更(各コントローラーで使用する認証情報に部署情報等も必要なため)
+		Users loginUser = service.getUser(username);
+		
 		//ユーザーが存在しない場合
 		if (loginUser == null) {
 			throw new UsernameNotFoundException("user not found");
 		}
 
 		//権限List作成
-		GrantedAuthority authority = new SimpleGrantedAuthority(loginUser.getRole());
+		GrantedAuthority authority = new SimpleGrantedAuthority(String.valueOf(loginUser.getRole()));
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(authority);
 
@@ -40,6 +41,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		CustomUserDetails userDetails = new CustomUserDetails(loginUser.getId(),
 				loginUser.getAccount(),
 				loginUser.getPass(),
+				loginUser.getRole(),
+				loginUser.getName(),
+				loginUser.getDepartmentsId(),
+				loginUser.getDepartmentsName(),
+				loginUser.getRolesId(),
+				loginUser.getWorkPatternsId(),
 				authorities);
 
 		return userDetails;

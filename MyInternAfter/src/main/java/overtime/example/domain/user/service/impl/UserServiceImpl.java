@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
 	/** ユーザー情報取得 */
 	@Override
-	public Users getUser(Integer id) {
-		return mapper.findUser(id);
+	public Users getUser(String account) {
+		return mapper.findUser(account);
 	}
 }
