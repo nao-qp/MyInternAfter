@@ -1,4 +1,4 @@
-package overtime.example.controller;
+package overtime.example.controller.report;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,8 +9,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,15 +20,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.validation.Valid;
+import overtime.example.aop.annotation.Authenticated;
 import overtime.example.application.service.CalcOvertimeService;
 import overtime.example.application.service.EditForDisplayService;
 import overtime.example.application.service.TimeConverterService;
 import overtime.example.domain.user.model.Overtime;
 import overtime.example.domain.user.model.Reports;
-import overtime.example.domain.user.model.Users;
 import overtime.example.domain.user.model.WorkPatterns;
 import overtime.example.domain.user.service.ReportService;
-import overtime.example.domain.user.service.UserService;
 import overtime.example.domain.user.service.WorkPatternService;
 import overtime.example.domain.user.service.impl.CustomUserDetails;
 import overtime.example.form.ReportForm;
@@ -39,9 +37,6 @@ public class ReportAddController {
 
 	@Autowired
 	private ModelMapper modelMapper;
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private ReportService reportService;
@@ -60,22 +55,11 @@ public class ReportAddController {
 
 	//報告書入力画面表示
 	@GetMapping("report/add/{id}")
+	@Authenticated
 	public String getReportAdd(Model model, Locale locale, @ModelAttribute ReportForm form,
-									@PathVariable("id") Integer id) {
+									@PathVariable("id") Integer id,
+									@AuthenticationPrincipal CustomUserDetails user) {
 
-		// 現在のユーザーの認証情報を取得
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        //認証情報がない場合は、ログインページにリダイレクトする
-        if (authentication == null) {
-        	 return "redirect:/user/login";
-        }
-
-        // 認証されたユーザーのIDを取得
-        Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-
-        // ユーザー情報を取得
-        Users user = userService.getUser(currentUserId);
         model.addAttribute("user", user);
 
         //報告データを取得
@@ -132,8 +116,10 @@ public class ReportAddController {
 
 	//報告書更新処理
 	@PostMapping("report/add/{id}")
+	@Authenticated
 	public String postReportAdd(Model model, Locale locale, 
-			@ModelAttribute @Valid ReportForm form, BindingResult bindingResult, @PathVariable("id") Integer id) {
+			@ModelAttribute @Valid ReportForm form, BindingResult bindingResult, @PathVariable("id") Integer id,
+			@AuthenticationPrincipal CustomUserDetails user) {
 
 		//バリデーション
 		if (bindingResult.hasErrors()) {
@@ -166,24 +152,13 @@ public class ReportAddController {
 	        model.addAttribute("moreThanRestPeriodErrors", moreThanRestPeriodErrors);
 	        model.addAttribute("restTimeInOverTimeErrors", restTimeInOverTimeErrors);
 		          
-	        return getReportAdd(model, locale, form, id);
+	        return getReportAdd(model, locale, form, id, user);
 		}
-				
-		// 現在のユーザーの認証情報を取得
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        //認証情報がない場合は、ログインページにリダイレクトする
-        if (authentication == null) {
-        	 return "redirect:/user/login";
-        }
-
-        // 認証されたユーザーのIDを取得
-        Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        
         ////報告データ更新
         Reports report = modelMapper.map(form, Reports.class);
         report.setId(id);
-        report.setUsersId(currentUserId);
+        report.setUsersId(user.getId());
         
         //報告日設定
         LocalDate reportDate = LocalDate.now();
@@ -253,21 +228,10 @@ public class ReportAddController {
 
 	//新規報告書入力画面表示（事後報告）
 	@GetMapping("report/new-add")
-	public String getNewReportAdd(Model model, Locale locale, @ModelAttribute ReportForm form) {
+	@Authenticated
+	public String getNewReportAdd(Model model, Locale locale, @ModelAttribute ReportForm form,
+			@AuthenticationPrincipal CustomUserDetails user) {
 
-		// 現在のユーザーの認証情報を取得
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        //認証情報がない場合は、ログインページにリダイレクトする
-        if (authentication == null) {
-        	 return "redirect:/user/login";
-        }
-
-        // 認証されたユーザーのIDを取得
-        Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-
-        // ユーザー情報を取得
-        Users user = userService.getUser(currentUserId);
         model.addAttribute("user", user);
 
         //勤務パターンマスター取得
@@ -301,8 +265,10 @@ public class ReportAddController {
 
 	//報告書新規作成（事後報告）
 	@PostMapping("report/new-add")
+	@Authenticated
 	public String postNewReportAdd(Model model, Locale locale, 
-			@ModelAttribute @Valid  ReportForm form, BindingResult bindingResult) {
+			@ModelAttribute @Valid  ReportForm form, BindingResult bindingResult,
+			@AuthenticationPrincipal CustomUserDetails user) {
 
 		//バリデーション
 		if (bindingResult.hasErrors()) {
@@ -335,19 +301,8 @@ public class ReportAddController {
 	        model.addAttribute("moreThanRestPeriodErrors", moreThanRestPeriodErrors);
 	        model.addAttribute("restTimeInOverTimeErrors", restTimeInOverTimeErrors);
 	        
-	        return getNewReportAdd(model, locale, form);
+	        return getNewReportAdd(model, locale, form, user);
 		}
-				
-		// 現在のユーザーの認証情報を取得
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        //認証情報がない場合は、ログインページにリダイレクトする
-        if (authentication == null) {
-        	 return "redirect:/user/login";
-        }
-
-        // 認証されたユーザーのIDを取得
-        Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
 
         ////報告データ作成更新
         Reports report = modelMapper.map(form, Reports.class);
@@ -371,7 +326,7 @@ public class ReportAddController {
         		timeConverterService.toMinutesGetTimeDifference(report.getRestStartTime(), report.getRestEndTime())
         		);
         //ユーザーID設定
-        report.setUsersId(currentUserId);
+        report.setUsersId(user.getId());
         
         //残業時間計算
         //休日

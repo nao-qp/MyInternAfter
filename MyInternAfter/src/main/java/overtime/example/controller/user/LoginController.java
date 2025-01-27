@@ -1,4 +1,4 @@
-package overtime.example.controller;
+package overtime.example.controller.user;
 
 import java.util.Locale;
 

@@ -4,23 +4,6 @@
 
 <!-- Mapperとxmlのマッピング -->
 <mapper namespace="overtime.example.repository.UserMapper">
-<!-- ログインユーザー情報取得 -->
-<select id="findLoginUser" resultType="LoginUsers">
-	select
-		users.id
-		,users.account
-		,users.pass
-		,roles.role
-	from
-		users
-	left join
-		roles
-	on
-		users.roles_id  = roles.id
-	where
-		users.account = #{account}
-	and users.is_deleted = 0
-</select>
 
 <!-- ユーザー情報取得 -->
 <select id="findUser" resultType="Users">

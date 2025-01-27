@@ -1,13 +1,10 @@
-package overtime.example.controller;
+package overtime.example.controller.request;
 
 import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,16 +15,11 @@ import jakarta.servlet.http.HttpSession;
 import overtime.example.aop.annotation.Authenticated;
 import overtime.example.application.service.EditForDisplayService;
 import overtime.example.domain.user.model.Requests;
-import overtime.example.domain.user.model.Users;
 import overtime.example.domain.user.service.RequestService;
-import overtime.example.domain.user.service.UserService;
 import overtime.example.domain.user.service.impl.CustomUserDetails;
 
 @Controller
 public class RequestController {
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private RequestService requestService;
@@ -43,21 +35,6 @@ public class RequestController {
 	public String getRequestList(Model model, Locale locale,
 			@RequestParam(value = "fromMenu", required = false) String fromMenu,
 			@AuthenticationPrincipal CustomUserDetails user) {
-//	      
-//		// 現在のユーザーの認証情報を取得
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        //認証情報がない場合は、ログインページにリダイレクトする
-//        if (authentication == null) {
-//        	 return "redirect:/user/login";
-//        }
-//
-//        // 認証されたユーザーのIDを取得
-//        Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-
-        // ユーザー情報を取得
-//        Users user = userService.getUser(currentUserId);
-//        Users user = userService.getUser(authenticationInfo.getUserId());
 		
 		// 認証情報から取得したユーザー情報(CustomUserDetails user)を使用する
         model.addAttribute("user", user);
@@ -89,28 +66,12 @@ public class RequestController {
 
 	//残業申請詳細画面表示
 	@GetMapping("request/detail/{id}")
+	@Authenticated
 	public String getRequestDetail(Model model, Locale locale, @PathVariable("id") Integer id,
+			@AuthenticationPrincipal CustomUserDetails user,
 			HttpSession session) {
 			// Excel出力用にsessionを用意
 
-		// 現在のユーザーの認証情報を取得
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        //認証情報がない場合は、ログインページにリダイレクトする
-        if (authentication == null) {
-        	 return "redirect:/user/login";
-        }
-
-        // 認証されたユーザーのIDを取得
-        Integer currentUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        // 権限を取得
-        String role = authentication.getAuthorities().stream()
-        				.map(GrantedAuthority::getAuthority)
-        				.findFirst()
-        				.orElse(null);
-        model.addAttribute("role", role);
-        // ユーザー情報を取得
-        Users user = userService.getUser(currentUserId);
         model.addAttribute("user", user);
 
         // 残業申請データ取得
