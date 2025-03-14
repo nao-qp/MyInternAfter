@@ -11,7 +11,6 @@
 	<groupId>overtime.example</groupId>
 	<artifactId>MyInternAfter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
 	<name>MyInternAfter</name>
 	<description>MyInternAfter project for Spring Boot</description>
 	<url/>

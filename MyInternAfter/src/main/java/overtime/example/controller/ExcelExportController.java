@@ -1,9 +1,9 @@
 package overtime.example.controller;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -31,10 +32,11 @@ public class ExcelExportController {
 	@GetMapping("/download")
     public ResponseEntity<byte[]> downloadExcel(HttpSession session) throws IOException {
         // テンプレートExcelファイルのパス
-        FileInputStream fis = new FileInputStream(new File("src/main/resources/excel/template.xlsx"));
-        
+    	ClassPathResource resource = new ClassPathResource("excel/template.xlsx");
+    	InputStream in = resource.getInputStream();
+    
         // 既存のテンプレートExcelファイルを読み込む
-        try (XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+        try (XSSFWorkbook workbook = new XSSFWorkbook(in)) {
 	        // シートを取得
 	        XSSFSheet sheet = workbook.getSheetAt(0);  // 1番目のシートを取得（シート番号は0から始まる）
         
